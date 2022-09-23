@@ -1,9 +1,10 @@
 import { async } from "@firebase/util";
 import { useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import {  useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import app from "../../firebase";
+import { getDatabase, ref,set } from "firebase/database";
 
 function RegisterPage(){
   const [loding,setLoding] = useState(false) // 계정 생성 시 firebase에서 계정 생성될때 까지 submit버튼 비활성화
@@ -19,7 +20,12 @@ function RegisterPage(){
     await updateProfile(auth.currentUser,{
       displayName:data.name
     })
-    console.log(createdUser)
+    console.log(createdUser.user.email)
+    const database = getDatabase(app)
+    set(ref(database,`users/${createdUser.user.uid}`),{
+      name:createdUser.user.displayName,
+      email:createdUser.user.email
+    })
     setLoding(false)
   }
   catch(error){
@@ -66,9 +72,8 @@ function RegisterPage(){
       {errors.password_confirm && errors.password_confirm.type === "required" && <p>This password confirm field is required</p>}
       {errors.password_confirm && errors.password_confirm.type === "validate" && <p>The passwords do not match</p>}
       <input type="submit" disabled={loding} />
+      <Link to='/login' className="link">이미 아이디가 있다면...</Link>
     </form>
-    <Link to='/login' className="link">이미 아이디가 있다면...</Link>
-
     </article>
   )
 }
