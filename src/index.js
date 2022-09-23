@@ -1,5 +1,6 @@
 import ReactDOM from 'react-dom/client';
 import React from 'react';
+import "./css/index.css"
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { applyMiddleware } from 'redux';
@@ -8,7 +9,7 @@ import promiseMiddleware from 'redux-promise'
 import ReduxThunk from 'redux-thunk'
 import { createStore } from 'redux';
 import rootReducer from './redux/reducers';
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 const createStoreMiddleware = applyMiddleware(promiseMiddleware,ReduxThunk)(createStore)
 const root = ReactDOM.createRoot(document.getElementById('root'));
