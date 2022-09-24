@@ -6,7 +6,6 @@ import UserPanel from "./UserPanel"
 function SidePanel(){
   return(
     <div className="side-panel">
-      SidePanel
       <UserPanel />
       <Favorited />
       <ChatRooms />

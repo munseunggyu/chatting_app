@@ -159,3 +159,10 @@ hr {
   color: white;
   max-width: 275px;
 }
+
+
+/* MainPanel 시작 */
+.main-panel{
+  width: 100%;
+  padding: 2rem 2rem 0 2rem;
+}
