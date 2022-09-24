@@ -7,6 +7,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import app from "./firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "./redux/actions/user_action";
+import Loading from "./components/Loading.js";
 
 function App() {
   const navigate = useNavigate()
@@ -24,17 +25,23 @@ function App() {
       }
     })
   },[])
-  if (userInfo.isLoading) {
-    return <div>...isLoading</div>;
-  } else {
-    return (
-      <Routes>
-        <Route path="/" element={<ChatPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-      </Routes>
-    );
-  }
+  console.log(userInfo)
+  return (
+    <Routes>
+      {
+        userInfo.isLoading 
+        ?
+        <>
+          <Route path="/" element={<Loading />} />
+          <Route path="/register" element={<RegisterPage /> } />
+          <Route path="/login" element={<LoginPage /> } />
+        </>
+        : 
+          <Route path="/" element={<ChatPage /> } />
+      }
+    </Routes>
+    
+  );
 }
 
 export default App;
