@@ -17,28 +17,24 @@ function App() {
     const auth = getAuth(app);
     onAuthStateChanged(auth,user => {
       if(user){
-        console.log(user)
         dispatch(setUser(user))
+        navigate('/')
       }else{
+        navigate('/login')
       }
     })
   },[])
-  return (
-    <Routes>
-
-    { userInfo ?
-      <>
-        <Route path="/" element={<ChatPage /> } />
-      </>
-      : 
-      <>
-        <Route path="/" element={<RegisterPage /> } />
-        <Route path="/login" element={<LoginPage /> } />
-      </>
-    }
-    </Routes>
-    
-  );
+  if (userInfo.isLoading) {
+    return <div>...isLoading</div>;
+  } else {
+    return (
+      <Routes>
+        <Route path="/" element={<ChatPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+      </Routes>
+    );
+  }
 }
 
 export default App;

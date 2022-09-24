@@ -1,11 +1,19 @@
 import {IoIosChatboxes} from 'react-icons/io'
 import Dropdown from 'react-bootstrap/Dropdown';
 import Image from 'react-bootstrap/Image'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAuth, signOut } from 'firebase/auth';
+import app from '../../../firebase';
+import { clearUser } from '../../../redux/actions/user_action';
 
 function UserPanel(){
   const userInfo = useSelector(state => state.user.currentUser)
-  console.log(userInfo)
+  const dispatch = useDispatch()
+  const handelLogout = () => {
+    const auth = getAuth(app)
+    signOut(auth)
+    dispatch(clearUser())
+  }
   return(
     <>
       <h3>
@@ -19,12 +27,12 @@ function UserPanel(){
           <Dropdown.Toggle
             style={{background:'transparent',border:'0px'}}
             variant="success" id="dropdown-basic">
-            {userInfo.email}
+            {userInfo && userInfo.email}
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
             <Dropdown.Item >프로필 사진 변경</Dropdown.Item>
-            <Dropdown.Item >로그 아웃</Dropdown.Item>
+            <Dropdown.Item onClick={handelLogout} >로그 아웃</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       </div>
