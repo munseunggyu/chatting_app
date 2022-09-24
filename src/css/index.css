@@ -160,6 +160,18 @@ hr {
   max-width: 275px;
 }
 
+/* UserPanel 시작 */
+.user-panel-con{
+  display: flex;
+  margin-bottom: 1rem;
+
+}
+.user-panel-con .user-panel-img{
+  width: 30px;
+  height: 30px;
+  margin-top: 3px;
+}
+
 
 /* MainPanel 시작 */
 .main-panel{

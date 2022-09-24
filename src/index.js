@@ -9,7 +9,7 @@ import promiseMiddleware from 'redux-promise'
 import ReduxThunk from 'redux-thunk'
 import { createStore } from 'redux';
 import rootReducer from './redux/reducers';
-// import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const createStoreMiddleware = applyMiddleware(promiseMiddleware,ReduxThunk)(createStore)
 const root = ReactDOM.createRoot(document.getElementById('root'));
