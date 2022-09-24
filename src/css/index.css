@@ -1,4 +1,6 @@
 @import url(./reset.css);
+
+/* 로그인,회원가입 시작 */
 .auth-wrapper {
   display: flex;
   flex-direction: column;
@@ -140,4 +142,20 @@ hr {
   color: gray;
   text-decoration: none;
   cursor: pointer;
+}
+/* 로그인,회원가입 끝 */
+
+/* 채팅 페이지 */
+.chat-page{
+  display: flex;
+
+}
+
+/* 사이드패널 시작 */
+.side-panel{
+  background-color: #7bb3eb;
+  padding: 2rem;
+  min-height: 100vh;
+  color: white;
+  max-width: 275px;
 }

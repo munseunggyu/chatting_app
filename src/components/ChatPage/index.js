@@ -1,8 +1,11 @@
+import MainPanel from "./MainPanel"
+import SidePanel from "./SidePanel"
 
 function ChatPage(){
   return(
-    <div>
-      ChatPage 입니다.
+    <div className="chat-page">
+      <SidePanel />
+      <MainPanel />
     </div>
   )
 }

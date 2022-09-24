@@ -19,18 +19,25 @@ function App() {
       if(user){
         console.log(user)
         dispatch(setUser(user))
-        navigate('/')
       }else{
-        navigate('/login')
       }
     })
   },[])
   return (
     <Routes>
-      <Route path="/" element={<ChatPage /> } />
-      <Route path="/login" element={<LoginPage /> } />
-      <Route path="/register" element={<RegisterPage /> } />
+
+    { userInfo ?
+      <>
+        <Route path="/" element={<ChatPage /> } />
+      </>
+      : 
+      <>
+        <Route path="/" element={<RegisterPage /> } />
+        <Route path="/login" element={<LoginPage /> } />
+      </>
+    }
     </Routes>
+    
   );
 }
 
