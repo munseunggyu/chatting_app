@@ -13,7 +13,6 @@ function App() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const userInfo = useSelector(state => state.user)
-  console.log(userInfo,'유저 정보임돠')
   useEffect(() => {
     const auth = getAuth(app);
     onAuthStateChanged(auth,user => {
@@ -25,7 +24,6 @@ function App() {
       }
     })
   },[])
-  console.log(userInfo)
   return (
     <Routes>
       {

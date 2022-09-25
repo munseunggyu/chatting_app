@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import app from "../../firebase";
 import { getDatabase, ref,set } from "firebase/database";
+import md5 from "md5";
 
 function RegisterPage(){
   const [loding,setLoding] = useState(false) // 계정 생성 시 firebase에서 계정 생성될때 까지 submit버튼 비활성화
@@ -17,13 +18,15 @@ function RegisterPage(){
     const auth = getAuth(app)
     let createdUser = await createUserWithEmailAndPassword(auth, data.email, data.password)
     await updateProfile(auth.currentUser,{
-      displayName:data.name
+      displayName:data.name,
+      photoURL: `http://gravatar.com/avatar/${md5(createdUser.user.email)}?d=identicon`
     })
     console.log(createdUser.user.email)
     const database = getDatabase(app)
     set(ref(database,`users/${createdUser.user.uid}`),{
       name:createdUser.user.displayName,
-      email:createdUser.user.email
+      email:createdUser.user.email,
+      images:`http://gravatar.com/avatar/${md5(createdUser.user.email)}?d=identicon`
     })
     setLoding(false)
   }

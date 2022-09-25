@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import firebase from '../../firebase';
 import app from '../../firebase';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 function LoginPage() {
+  const navigate = useNavigate()
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [errorFromSubmit, setErrorFromSubmit] = useState("")
   const [loading, setLoading] = useState(false);
