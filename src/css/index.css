@@ -157,7 +157,7 @@ hr {
   padding: 2rem;
   min-height: 100vh;
   color: white;
-  max-width: 275px;
+  width: 275px;
 }
 
 /* UserPanel 시작 */
@@ -175,6 +175,6 @@ hr {
 
 /* MainPanel 시작 */
 .main-panel{
-  width: 100%;
+  width: calc(100%-275px);
   padding: 2rem 2rem 0 2rem;
 }

@@ -42,7 +42,6 @@ function UserPanel(){
         dispatch(setPhotoURL(downloadURL))
 
         // 데이터베이스에서 사진 변경
-        console.log(`users/${userInfo.uid}`)
         const db = getDatabase(app)
         update(re(db,`users/${userInfo.uid}`),{
           images:downloadURL
@@ -54,7 +53,6 @@ function UserPanel(){
       console.log(error)
     }
   }
-  console.log(userInfo.photoURL)
   return(
     <>
       <h3>
