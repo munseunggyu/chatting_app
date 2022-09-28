@@ -3,70 +3,59 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { child, get, getDatabase, onChildAdded, onValue, push, ref, update } from 'firebase/database';
-import app from '../../../firebase';
+import { useDispatch, useSelector } from 'react-redux';
+import { setCurrentChatRoom } from '../../../redux/actions/chatRoom_action';
+import { collection, doc, onSnapshot, orderBy, query, setDoc } from 'firebase/firestore';
+import { db } from '../../../firebase';
 function ChatRooms(){
+  const dispatch = useDispatch()
+  const currentChatRoom = useSelector(state => state.chatReduce)
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const [activeChatRoom,setActiveChatRoom] = useState('')
+  const [lista,setList] = useState([])
   const user = useSelector(state => state.user.currentUser)
 
-  
-  
   // 채팅방 생성시 들어가는 데이터
   const [roomName,setRoomName] = useState('')
   const [roomDes,setRoomDes] = useState('')
 
-
-  const addChatRoom = async () => {
-  // 시간 순으로 자동으로 정렬된다. 자동으로 해당 방의 키값 생성
-  const chatRoomKey = push(child(ref(getDatabase(app)), 'chatRooms')).key;
-  const newChatRoom = {
-    id:chatRoomKey,
-    name:roomName,
-    description:roomDes,
-    CreateBy:{
-      name:user.displayName,
-      image:user.photoURL
-    }
+  const CreateBy = {
+    name:user.displayName,
+    image:user.photoURL
   }
-
-    try{
-      await update(ref(getDatabase(app),`chatRooms/${chatRoomKey}`),newChatRoom)
-    }catch(error){
-      console.log(error)
-    }
-  }
-  const handleSubmit = (e) => { // 생성 버튼 클릭시 실행
-    e.preventDefault()
-    if(roomName && roomDes){
-      addChatRoom()
-      handleClose()
-    }
-  }
-
-  // {
-  //   CreateBy: image,name,
-  //   description,
-  //   id,
-  //   name,
-  // }
-  // 채팅방 리스트 불러오기
-  const [chatRoomsArray,setChatRoomsArray] = useState([])
-  const AddRoomsListeners = () => {
-    const db = getDatabase(app);
-    const dbRef = ref(db, `chatRooms`);
-    onChildAdded(dbRef, (data) => {    
-      setChatRoomsArray(prev => {
-        return [...prev,{...data.val()}]
+  const getlist = () =>{      // 데이터 가져온다.
+    const q = query(collection(db,'ChatRooms'),orderBy('CreateAt','desc'))
+    onSnapshot(q,snapshot => {
+      const newarr = snapshot.docs.map(doc => 
+        ({
+        id:doc.id,
+        ...doc.data(),
       })
-    })
+      )
+      setList(newarr)
+    })}
+
+
+  // 방 클릭 시 해당 리덕스에 저장 및 색상 변경
+  const enter = (list) => {
+    dispatch(setCurrentChatRoom(list))
+    setActiveChatRoom(currentChatRoom.currentChatRoom.id)
+    console.log('방에 입장하였습니다.')
   }
-  useEffect(() => { 
-    AddRoomsListeners()
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    const  newChatRoom = doc(collection(db, "ChatRooms"));
+    // later...
+    await setDoc(newChatRoom, {id:newChatRoom.id,name:roomName,des:roomDes,CreateBy,CreateAt:new Date()});
+    console.log('방을 생성하였습니다')
+    handleClose()
+  }
+  useEffect(() => {
+    getlist()
   },[])
-  console.log(chatRoomsArray.length)
+  console.log(activeChatRoom,'처음')
   return(
     <div>
       <div style={{position:'relative',with:'100%'
@@ -75,16 +64,24 @@ function ChatRooms(){
        CHAT ROOMS (1)
        <FaPlus
        onClick={handleShow}
-        // onClick={this.handleShow}
         style={{
             position: 'absolute',
             right: '-10px', cursor: 'pointer'
         }} />
       </div>
       <ul>
-          {
-            chatRoomsArray.map(list => 
-            <li key={list.id}>{list.name}</li>
+          { lista.length>0 &&
+            lista.map(list => 
+            <li 
+              onClick={() => enter(list)}
+              key={list.id}
+              style={{backgroundColor: 
+                activeChatRoom &&
+                 list.id === activeChatRoom
+                ? '#ffffff45'
+                : 'transparent'
+              }}
+              >{list.name}</li>
             )
           }
           </ul>
@@ -93,7 +90,7 @@ function ChatRooms(){
           <Modal.Title>Create a chat room</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form onClick={handleSubmit}>
+          <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="formRoomName">
               <Form.Label>방 이름</Form.Label>
               <Form.Control
