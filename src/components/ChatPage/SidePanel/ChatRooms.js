@@ -54,7 +54,6 @@ function ChatRooms(){
   useEffect(() => {
     getlist()
   },[])
-  console.log(activeChatRoom,'처음')
   return(
     <div>
       <div style={{position:'relative',with:'100%'
