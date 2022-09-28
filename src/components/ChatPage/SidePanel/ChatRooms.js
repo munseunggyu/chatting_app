@@ -39,10 +39,9 @@ function ChatRooms(){
 
 
   // 방 클릭 시 해당 리덕스에 저장 및 색상 변경
-  const enter = (list) => {
+  const enter =  (list) => {
     dispatch(setCurrentChatRoom(list))
-    setActiveChatRoom(currentChatRoom.currentChatRoom.id)
-    console.log('방에 입장하였습니다.')
+    setActiveChatRoom(list.id)
   }
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -59,11 +58,11 @@ function ChatRooms(){
   return(
     <div>
       <div style={{position:'relative',with:'100%'
-      ,display:'flex',alignItems:'center'}}>
-       <FaRegSmileWink style={{ marginRight: 3 }} />
-       CHAT ROOMS (1)
-       <FaPlus
-       onClick={handleShow}
+    ,display:'flex',alignItems:'center'}}>
+      <FaRegSmileWink style={{ marginRight: 3 }} />
+      CHAT ROOMS (1)
+      <FaPlus
+      onClick={handleShow}
         style={{
             position: 'absolute',
             right: '-10px', cursor: 'pointer'
@@ -76,8 +75,7 @@ function ChatRooms(){
               onClick={() => enter(list)}
               key={list.id}
               style={{backgroundColor: 
-                activeChatRoom &&
-                 list.id === activeChatRoom
+                list.id === activeChatRoom
                 ? '#ffffff45'
                 : 'transparent'
               }}

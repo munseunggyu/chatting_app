@@ -7,8 +7,8 @@ function MainPanel(){
   return(
     <Container>
     <MessageHeader />
-    <MessageForm />
     <Message />
+    <MessageForm />
     </Container>
   )
 }
