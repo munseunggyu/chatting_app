@@ -2,10 +2,9 @@ import React, { useState, useRef, useEffect } from 'react'
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { addDoc, collection, collectionGroup, orderBy, getDocs, query, QuerySnapshot, setDoc, where } from 'firebase/firestore';
+import { addDoc, collection, collectionGroup, orderBy, getDocs, query, setDoc, where , doc, serverTimestamp} from 'firebase/firestore';
 import { db } from '../../../firebase';
 import { useSelector } from 'react-redux';
-import { async } from '@firebase/util';
 
 
 function MessageForm() {
@@ -19,13 +18,13 @@ function MessageForm() {
       return
     }
     
-    const citiesRef = collection(db, 'message2');
-    const newId = collection(citiesRef, currentChatId.currentChatRoom.id, currentChatId.currentChatRoom.name)
+    const messageRoom = collection(db, 'message2');
+    const newId = collection(messageRoom, currentChatId.currentChatRoom.id, 'ChatRoomName')
     await Promise.all([
         addDoc(newId, {
             name: content,
             id:currentChatId.currentChatRoom.id,
-            CreateAt:new Date()
+            CreateAt:serverTimestamp()
           }),
     
     ]);
@@ -43,12 +42,16 @@ function MessageForm() {
     if(currentChatId.currentChatRoom === null){
       return
     }
-    const museums = query(collectionGroup (db, currentChatId.currentChatRoom.name), where('id', '==', currentChatId.currentChatRoom.id))
-    if(!museums) return
-    const querySnapshot = await getDocs(museums);
-    querySnapshot.forEach((doc) => {
-       console.log(doc)
-    });
+    try{
+      const q = query(collectionGroup (db, 'ChatRoomName'),where('id', '==', currentChatId.currentChatRoom.id),orderBy('CreateAt','asc'))
+      if(!q) return
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+          console.log(doc.id, ' => ', doc.data());
+        });
+    }catch(error){
+      console.log(error)
+    }
   }
   useEffect(() => {
     getMessageData()

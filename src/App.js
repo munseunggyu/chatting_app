@@ -18,7 +18,7 @@ function App() {
     onAuthStateChanged(auth,user => {
       if(user){
         dispatch(setUser(user))
-        navigate('/')
+        // navigate('/')
       }else{
         navigate('/login')
       }
@@ -35,7 +35,9 @@ function App() {
           <Route path="/login" element={<LoginPage /> } />
         </>
         : 
+          <>
           <Route path="/" element={<ChatPage /> } />
+          </>
       }
     </Routes>
     
