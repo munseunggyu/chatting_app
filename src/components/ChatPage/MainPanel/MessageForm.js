@@ -2,29 +2,37 @@ import React, { useState, useRef, useEffect } from 'react'
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { addDoc, collection, collectionGroup, orderBy, getDocs, query, setDoc, where , doc, serverTimestamp} from 'firebase/firestore';
+import { addDoc, collection, collectionGroup, orderBy, getDocs, query, setDoc, where , doc, serverTimestamp, onSnapshot} from 'firebase/firestore';
 import { db } from '../../../firebase';
 import { useSelector } from 'react-redux';
+import Message from './Message';
 
 
 function MessageForm() {
   const [content,setContent] = useState('')
   const handleTxtChange = (e) => setContent(e.target.value)
+  const userInfo = useSelector(state => state.user.currentUser )
   const currentChatId = useSelector(state => state.chatReduce)
-  
+  const [messages,setMessages] = useState([])
   const handleClick = async () => {
     if(currentChatId.currentChatRoom === null){
       alert('방을 선택해 주세요')
       return
     }
     
+    // 대화방의 메시지 생성
     const messageRoom = collection(db, 'message2');
     const newId = collection(messageRoom, currentChatId.currentChatRoom.id, 'ChatRoomName')
+    console.log(newId.id)
     await Promise.all([
         addDoc(newId, {
-            name: content,
+            content,
             id:currentChatId.currentChatRoom.id,
-            CreateAt:serverTimestamp()
+            CreateAt:serverTimestamp(),
+            CreateUer:{
+              name:userInfo.displayName,
+              photoURL:userInfo.photoURL
+            }
           }),
     
     ]);
@@ -37,18 +45,20 @@ function MessageForm() {
     console.log('완료')
   }
 
-  // 데이터 가져오기
+  // 메시지 데이터 가져오기
   const getMessageData = async () => {
     if(currentChatId.currentChatRoom === null){
       return
     }
     try{
       const q = query(collectionGroup (db, 'ChatRoomName'),where('id', '==', currentChatId.currentChatRoom.id),orderBy('CreateAt','asc'))
-      if(!q) return
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-          console.log(doc.id, ' => ', doc.data());
-        });
+      onSnapshot(q,querySnapshot => {
+        // console.log(querySnapshot)
+        const newarr = querySnapshot.docs.map(doc => {
+          return doc.data()
+        })
+        setMessages(newarr)
+      })
     }catch(error){
       console.log(error)
     }
@@ -56,9 +66,28 @@ function MessageForm() {
   useEffect(() => {
     getMessageData()
   },[currentChatId])
-
   return (
     <div>
+      <div style={{
+      width: '100%',
+      height: '330px',
+      border: '.2rem solid #ececec',
+      borderRadius: '4px',
+      padding: '1rem',
+      marginBottom: '1rem',
+      marginTop:'10px',
+      overflowY:'scroll'
+    }}
+    >
+     { 
+      messages.length > 0 && 
+      messages.map((message,index) => 
+        <Message
+          key={message.id+message.content+index }
+          messageData={message} />
+        )
+     }
+    </div>
     <Form onSubmit={handleSubmit}>
     <Form.Group controlId="exampleForm.ControlTextarea1">
       <Form.Control
@@ -97,7 +126,6 @@ function MessageForm() {
       style={{ display: 'none' }}
       type="file"
     />
-
     </div>
   )
 }
