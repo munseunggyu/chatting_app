@@ -55,7 +55,7 @@ function MessageForm() {
       onSnapshot(q,querySnapshot => {
         // console.log(querySnapshot)
         const newarr = querySnapshot.docs.map(doc => {
-          return doc.data()
+          return doc.data({ serverTimestamps: "estimate" })
         })
         setMessages(newarr)
       })

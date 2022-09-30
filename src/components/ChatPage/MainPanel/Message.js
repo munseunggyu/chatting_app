@@ -2,7 +2,17 @@ import { Col, Container, Row } from "react-bootstrap"
 
 
 function Message({messageData}){
-  
+  const getDate = () => {
+    const date = messageData.CreateAt.toDate()
+    const year = date.getFullYear()
+    const month = date.getMonth()
+    const day = date.getDate()
+    const hour = date.getHours()
+    const min = date.getMinutes()
+    // const seconds = date.getSeconds()
+    return `${year}-${month}-${day} ${hour}:${min}`
+  }
+  const time = getDate()
   return(
     <div style={{ marginBottom: '3px', display:'flex' }}>
     <img
@@ -18,9 +28,9 @@ function Message({messageData}){
         // isMessageMine(message, user) && 
         "#ECECEC"
     }}>
-        <h6>{messageData.CreateUer.name}
-            <span style={{ fontSize: '10px', color: 'gray' }}>
-              
+        <h6>{messageData.CreateUer.name} 
+            <span style={{ fontSize: '10px', color: 'gray' ,marginLeft:'5px'}}>
+             {time}
             </span>
         </h6>
             <p>
