@@ -22,7 +22,6 @@ function MessageForm() {
     if(currentChatId.isPrivateChatRoom){  //privateRoom 메시지 보내기
       const DMMessage = collection(db, 'DMMessage');
       const newId = collection(DMMessage, currentChatId.currentChatRoom.id, 'DM')
-      console.log(newId.id)
       await Promise.all([
           addDoc(newId, {
               content,
@@ -30,7 +29,8 @@ function MessageForm() {
               CreateAt:serverTimestamp(),
               CreateUer:{
                 name:userInfo.displayName,
-              }
+                photoURL:userInfo.photoURL
+            }
             }),
       
       ])
@@ -38,7 +38,6 @@ function MessageForm() {
     else{
     const messageRoom = collection(db, 'message2');//privateRoom 메시지 보내기
     const newId = collection(messageRoom, currentChatId.currentChatRoom.id, 'ChatRoomName')
-    console.log(newId.id)
     await Promise.all([
         addDoc(newId, {
             content,
@@ -67,14 +66,24 @@ function MessageForm() {
       return
     }
     try{
-      const q = query(collectionGroup (db, 'ChatRoomName'),where('id', '==', currentChatId.currentChatRoom.id),orderBy('CreateAt','asc'))
+    if(currentChatId.isPrivateChatRoom){
+      const q = query(collectionGroup (db, 'DM'),where('id', '==', currentChatId.currentChatRoom.id),orderBy('CreateAt','asc'))
       onSnapshot(q,querySnapshot => {
-        // console.log(querySnapshot)
         const newarr = querySnapshot.docs.map(doc => {
           return doc.data({ serverTimestamps: "estimate" })
         })
         setMessages(newarr)
       })
+    }
+    else{  
+      const q = query(collectionGroup (db, 'ChatRoomName'),where('id', '==', currentChatId.currentChatRoom.id),orderBy('CreateAt','asc'))
+      onSnapshot(q,querySnapshot => {
+        const newarr = querySnapshot.docs.map(doc => {
+          return doc.data({ serverTimestamps: "estimate" })
+        })
+        setMessages(newarr)
+      })
+    }
     }catch(error){
       console.log(error)
     }
@@ -95,14 +104,14 @@ function MessageForm() {
       overflowY:'scroll'
     }}
     >
-     { 
+    { 
       messages.length > 0 && 
       messages.map((message,index) => 
         <Message
           key={message.id+message.content+index }
           messageData={message} />
         )
-     }
+    }
     </div>
     <Form onSubmit={handleSubmit}>
     <Form.Group controlId="exampleForm.ControlTextarea1">

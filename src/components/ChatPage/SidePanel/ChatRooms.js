@@ -20,7 +20,7 @@ function ChatRooms(){
   // 채팅방 생성시 들어가는 데이터
   const [roomName,setRoomName] = useState('')
   const [roomDes,setRoomDes] = useState('')
-
+  const isPrivate = useSelector(state => state.chatReduce)
   const CreateBy = {
     name:user.displayName,
     image:user.photoURL
@@ -75,7 +75,7 @@ function ChatRooms(){
               onClick={() => enter(list)}
               key={list.id}
               style={{backgroundColor: 
-                list.id === activeChatRoom
+                isPrivate.isPrivateChatRoom ===false && list.id === activeChatRoom
                 ? '#ffffff45'
                 : 'transparent'
               }}

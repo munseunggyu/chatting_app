@@ -7,8 +7,10 @@ import { setPriveChatRoom } from "../../../redux/actions/chatRoom_action"
 
 function DirectMessage(){
   const currentUser = useSelector(state => state.user.currentUser)
+  const [activeChatRoom,setActiveChatRoom] = useState('')
   const dispatch = useDispatch()
   const [users,setUsers] = useState([])
+  const isPrivate = useSelector(state => state.chatReduce)
   const [txt,setTxt] = useState('')
   const [lists,setLists] =useState([])
   const getUsers = async () => {
@@ -31,6 +33,7 @@ function DirectMessage(){
   const dmRoomCreate = async (dmRoomId) =>{
   const dmid = CreateDMRoomId(dmRoomId.uid) // DM방 생성
   const dmRoom = doc(db,'DMROOMS',dmid)
+
   setDoc(dmRoom,{
     id:dmid,
     otherUser:dmRoomId.uid,
@@ -54,6 +57,7 @@ const getDMROOMS = () => {    //  [방 생성자id,상대방id ]데이터 넣어
 
 const enterPriveRoom = (list) => {
   dispatch(setPriveChatRoom(list))
+  setActiveChatRoom(list.id)
   console.log('private room에 입장하였습니다.')
 }
 
@@ -74,6 +78,7 @@ const enterPriveRoom = (list) => {
           <li
             key={user.uid}
             onClick={() => dmRoomCreate(user)}
+            
           >
             ID:{user.displayName}
           </li>
@@ -87,6 +92,11 @@ const enterPriveRoom = (list) => {
           <li
             key={list.id}
             onClick={() => enterPriveRoom(list)}
+            style={{backgroundColor: 
+              isPrivate.isPrivateChatRoom && list.id === activeChatRoom
+              ? '#ffffff45'
+              : 'transparent'
+            }}
           >
             userid:{list.names.filter(v => v !== currentUser.displayName)}
           </li>
