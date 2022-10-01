@@ -29,24 +29,13 @@ function DirectMessage(){
     :`${currentUser.uid}${selectUser}`
   }
   const dmRoomCreate = async (dmRoomId) =>{
-
-  // const messageRoom = collection(db, 'DMROOMS');
-  // const newId = collection(messageRoom, dmRoomId, 'DMROOM')
-  // await Promise.all([
-  //     addDoc(newId, {
-  //         CreateAt:serverTimestamp(),
-  //         CreateUer:{
-  //           name:currentUser.displayName,
-  //           photoURL:currentUser.photoURL
-  //         }
-  //       }),
-  // ]);
-  const dmid = CreateDMRoomId(dmRoomId) // DM방 생성
+  const dmid = CreateDMRoomId(dmRoomId.uid) // DM방 생성
   const dmRoom = doc(db,'DMROOMS',dmid)
   setDoc(dmRoom,{
     id:dmid,
-    otherUser:dmRoomId,
-    ids:[dmRoomId,currentUser.uid]
+    otherUser:dmRoomId.uid,
+    ids:[dmRoomId.uid,currentUser.uid],
+    names:[dmRoomId.displayName,currentUser.displayName]
   })
   console.log('DM방 생성')
 }
@@ -63,22 +52,6 @@ const getDMROOMS = () => {    //  [방 생성자id,상대방id ]데이터 넣어
   })
 }
 
-// const onSubmit = async (e) => {
-//   e.preventDefault()
-//   const messageRoom = collection(db, 'DMROOMS');
-//   const newId = collection(messageRoom, dmRoomId, 'DMROOM')
-//   await Promise.all([
-//       addDoc(newId, {
-//           CreateAt:serverTimestamp(),
-//           CreateUer:{
-//             name:currentUser.displayName,
-//             photoURL:currentUser.photoURL
-//           }
-//         }),
-//   ]);
-//   console.log('DM방 생성')
-
-// }
 const enterPriveRoom = (list) => {
   dispatch(setPriveChatRoom(list))
   console.log('private room에 입장하였습니다.')
@@ -88,7 +61,6 @@ const enterPriveRoom = (list) => {
     getUsers()
     getDMROOMS()
   },[])
-  console.log(lists)
   return(
     <div>
     <span style={{ display: 'flex', alignItems: 'center' }}>
@@ -101,7 +73,7 @@ const enterPriveRoom = (list) => {
         users.map(user => 
           <li
             key={user.uid}
-            onClick={() => dmRoomCreate(user.uid)}
+            onClick={() => dmRoomCreate(user)}
           >
             ID:{user.displayName}
           </li>
@@ -111,20 +83,16 @@ const enterPriveRoom = (list) => {
     <ul>
       <li>#DM방</li>
       {
-        lists.map(list => 
+        lists.length > 0 && lists.map(list => 
             <li
               key={list.id}
               onClick={() => enterPriveRoom(list)}
             >
-              {list.otherUser}
+               userid:{list.names.filter(v => v !== currentUser.displayName)}
             </li>
           )
       }
     </ul>
-    <form>
-      <input onChange={(e) => setTxt(e.target.value)} value={txt} type='text' />
-      <button>submit</button>
-    </form>
   </div>
   )
 }

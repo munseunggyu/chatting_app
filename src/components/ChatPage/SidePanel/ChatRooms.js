@@ -35,7 +35,8 @@ function ChatRooms(){
       })
       )
       setList(newarr)
-    })}
+    })
+  }
 
 
   // 방 클릭 시 해당 리덕스에 저장 및 색상 변경
