@@ -19,9 +19,24 @@ function MessageForm() {
       alert('방을 선택해 주세요')
       return
     }
-    
-    // 대화방의 메시지 생성
-    const messageRoom = collection(db, 'message2');
+    if(currentChatId.isPrivateChatRoom){  //privateRoom 메시지 보내기
+      const DMMessage = collection(db, 'DMMessage');
+      const newId = collection(DMMessage, currentChatId.currentChatRoom.id, 'DM')
+      console.log(newId.id)
+      await Promise.all([
+          addDoc(newId, {
+              content,
+              id:currentChatId.currentChatRoom.id,
+              CreateAt:serverTimestamp(),
+              CreateUer:{
+                name:userInfo.displayName,
+              }
+            }),
+      
+      ])
+    }
+    else{
+    const messageRoom = collection(db, 'message2');//privateRoom 메시지 보내기
     const newId = collection(messageRoom, currentChatId.currentChatRoom.id, 'ChatRoomName')
     console.log(newId.id)
     await Promise.all([
@@ -35,7 +50,8 @@ function MessageForm() {
             }
           }),
     
-    ]);
+    ])
+    }
   }
 
   const handleSubmit = (e) => {

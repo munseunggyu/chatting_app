@@ -84,13 +84,13 @@ const enterPriveRoom = (list) => {
       <li>#DM방</li>
       {
         lists.length > 0 && lists.map(list => 
-            <li
-              key={list.id}
-              onClick={() => enterPriveRoom(list)}
-            >
-               userid:{list.names.filter(v => v !== currentUser.displayName)}
-            </li>
-          )
+          <li
+            key={list.id}
+            onClick={() => enterPriveRoom(list)}
+          >
+            userid:{list.names.filter(v => v !== currentUser.displayName)}
+          </li>
+        )
       }
     </ul>
   </div>
