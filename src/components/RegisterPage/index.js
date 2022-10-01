@@ -23,10 +23,12 @@ function RegisterPage(){
       photoURL: `http://gravatar.com/avatar/${md5(createdUser.user.email)}?d=identicon`
     })
       const userData =  doc(collection(db,'users'))
+      console.log(createdUser,'userid')
       await setDoc(userData,{
         email:data.email,
         displayName:data.name,
-        photoURL:`http://gravatar.com/avatar/${md5(createdUser.user.email)}?d=identicon`
+        photoURL:`http://gravatar.com/avatar/${md5(createdUser.user.email)}?d=identicon`,
+        uid:createdUser.user.uid // user생성시 만들어지는 uid
       })
     setLoding(false)
   }

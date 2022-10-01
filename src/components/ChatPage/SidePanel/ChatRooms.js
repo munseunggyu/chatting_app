@@ -67,7 +67,7 @@ function ChatRooms(){
             right: '-10px', cursor: 'pointer'
         }} />
       </div>
-      <ul>
+      <ul style={{ listStyleType: 'none', paddingLeft: '10px' }}>
           { lista.length>0 &&
             lista.map(list => 
             <li 
