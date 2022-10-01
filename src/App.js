@@ -18,7 +18,7 @@ function App() {
     onAuthStateChanged(auth,user => {
       if(user){
         dispatch(setUser(user))
-        // navigate('/')
+        navigate('/')
       }else{
         navigate('/login')
       }

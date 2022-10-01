@@ -2,9 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import {  useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import app from "../../firebase";
+import app, { db } from "../../firebase";
 import { getDatabase, ref,set } from "firebase/database";
 import md5 from "md5";
+import { collection, doc, setDoc } from "firebase/firestore";
 
 function RegisterPage(){
   const [loding,setLoding] = useState(false) // 계정 생성 시 firebase에서 계정 생성될때 까지 submit버튼 비활성화
@@ -21,13 +22,12 @@ function RegisterPage(){
       displayName:data.name,
       photoURL: `http://gravatar.com/avatar/${md5(createdUser.user.email)}?d=identicon`
     })
-    console.log(createdUser.user.email)
-    const database = getDatabase(app)
-    set(ref(database,`users/${createdUser.user.uid}`),{
-      name:createdUser.user.displayName,
-      email:createdUser.user.email,
-      images:`http://gravatar.com/avatar/${md5(createdUser.user.email)}?d=identicon`
-    })
+      const userData =  doc(collection(db,'users'))
+      await setDoc(userData,{
+        email:data.email,
+        displayName:data.name,
+        photoURL:`http://gravatar.com/avatar/${md5(createdUser.user.email)}?d=identicon`
+      })
     setLoding(false)
   }
   catch(error){

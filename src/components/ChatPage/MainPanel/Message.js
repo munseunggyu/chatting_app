@@ -1,7 +1,9 @@
+import React from "react"
 import { Col, Container, Row } from "react-bootstrap"
 
 
 function Message({messageData}){
+  console.log('message')
   const getDate = () => {
     const date = messageData.CreateAt.toDate()
     const year = date.getFullYear()
