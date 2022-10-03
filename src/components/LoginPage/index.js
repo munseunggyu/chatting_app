@@ -3,13 +3,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import firebase from '../../firebase';
 import app from '../../firebase';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 
 function LoginPage() {
   const navigate = useNavigate()
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [errorFromSubmit, setErrorFromSubmit] = useState("")
   const [loading, setLoading] = useState(false);
+  const onSocialClick = async () => {
+    const googleProvider = new GoogleAuthProvider()
+    await signInWithPopup(getAuth(app),googleProvider)
+  }
   const onSubmit = async (data) => {
 
   try {
@@ -44,9 +48,12 @@ function LoginPage() {
       {errorFromSubmit &&
       <p>{errorFromSubmit}</p>
       }
+      
       <input type="submit" disabled={loading} />
       <Link className='link' to="/register">아직 아이디가 없다면... </Link>
     </form>
+    <button onClick={onSocialClick}>Google</button>
+    
   </article>
   )}
 
